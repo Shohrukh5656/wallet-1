@@ -2,7 +2,7 @@ package wallet
 
 import (
 	"errors"
-	"github.com/Nappy-Says/wallet/pkg/types"
+  "github.com/Nappy-Says/wallet/pkg/types"
 	"github.com/google/uuid"
 )
 
@@ -11,14 +11,14 @@ var ErrAmountMustBePositive = errors.New("amount must be greater than zero")
 var ErrAccountNotFound = errors.New("account not found")
 var ErrNotEnoughtBalance = errors.New("account not enough balance")
 var ErrPaymentNotFound = errors.New("payment not found")
-
+var ErrFavoriteNotFound = errors.New("favorite not found")
 
 type Service struct {
 	nextAccountID int64
 	accounts      []*types.Account
 	payments      []*types.Payment
+	favorites     []*types.Favorite
 }
-
 
 func (s *Service) RegisterAccount(phone types.Phone) (*types.Account, error) {
 	for _, account := range s.accounts {
@@ -90,6 +90,7 @@ func (s *Service) FindAccountByID(accountID int64) (*types.Account, error) {
 	return account, nil
 }
 
+
 func (s *Service) FindPaymentByID(paymentID string) (*types.Payment, error) {
 	var payment *types.Payment
 
@@ -104,6 +105,15 @@ func (s *Service) FindPaymentByID(paymentID string) (*types.Payment, error) {
 	}
 
 	return payment, nil
+}
+
+func (s *Service) FindFavoriteByID(favoriteID string) (*types.Favorite, error) {
+	for _, favorite := range s.favorites {
+		if favorite.ID == favoriteID {
+			return favorite, nil
+		}
+	}
+	return nil, ErrFavoriteNotFound
 }
 
 func (s *Service) Deposit(accountID int64, amount types.Money) error {
@@ -135,9 +145,8 @@ func (s *Service) Reject(paymentID string) error {
 	acc.Balance += pay.Amount
 
 	return nil
-}     
+}
 
-//
 func (s *Service) Repeat(paymentID string) (*types.Payment, error) {
 	pay, err := s.FindPaymentByID(paymentID)
 	if err != nil {
@@ -152,7 +161,6 @@ func (s *Service) Repeat(paymentID string) (*types.Payment, error) {
 	return payment, nil
 }
 
-//
 func (s *Service) FavoritePayment(paymentID string, name string) (*types.Favorite, error) {
 	payment, err := s.FindPaymentByID(paymentID)
 
@@ -173,7 +181,6 @@ func (s *Service) FavoritePayment(paymentID string, name string) (*types.Favorit
 	return newFavorite, nil
 }
 
-//
 func (s *Service) PayFromFavorite(favoriteID string) (*types.Payment, error) {
 	favorite, err := s.FindFavoriteByID(favoriteID)
 	if err != nil {
@@ -187,5 +194,3 @@ func (s *Service) PayFromFavorite(favoriteID string) (*types.Payment, error) {
 
 	return payment, nil
 }
-
-
