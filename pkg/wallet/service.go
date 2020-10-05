@@ -5,7 +5,7 @@ import (
   "github.com/Nappy-Says/wallet/pkg/types"
 	"github.com/google/uuid"
 )
-
+   
 var ErrPhoneRegistered = errors.New("phone already registred")
 var ErrAmountMustBePositive = errors.New("amount must be greater than zero")
 var ErrAccountNotFound = errors.New("account not found")

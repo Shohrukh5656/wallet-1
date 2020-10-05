@@ -155,5 +155,5 @@ func TestService_Favorite_success_user(t *testing.T) {
 	paymentFavorite, err := svc.PayFromFavorite(favorite.ID)
 	if err != nil {
 		t.Errorf("PayFromFavorite() Error() can't for an favorite(%v): %v", paymentFavorite, err)
-	}
+	}   
 }
