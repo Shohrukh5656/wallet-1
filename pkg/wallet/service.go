@@ -2,6 +2,9 @@ package wallet
 
 import (
 	"errors"
+	"log"
+	"os"
+	"strconv"
 	"github.com/Nappy-Says/wallet/pkg/types"
 	"github.com/google/uuid"
 )
@@ -11,6 +14,7 @@ var ErrAmountMustBePositive = errors.New("amount must be greater than zero")
 var ErrAccountNotFound = errors.New("account not found")
 var ErrNotEnoughtBalance = errors.New("account not enough balance")
 var ErrPaymentNotFound = errors.New("payment not found")
+var ErrFileNotFound = errors.New("file not fount")
 
 
 type Service struct {
@@ -133,6 +137,38 @@ func (s *Service) Reject(paymentID string) error {
 
 	pay.Status = types.PaymentStatusFail
 	acc.Balance += pay.Amount
+
+	return nil
+}
+
+func (s *Service) ExportToFile(path string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		log.Print(err)
+		return ErrFileNotFound
+	}
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			log.Print(cerr)
+		}
+	}()
+
+	str := ""
+
+	for _, acc := range s.accounts {
+		ID := strconv.Itoa(int(acc.ID)) + ";"
+		phone := string(acc.Phone) + ";"
+		balance := strconv.Itoa(int(acc.Balance))
+
+		str += ID
+		str += phone
+		str += balance + "|"
+	}
+	_, err = file.Write([]byte(str))
+	if err != nil {
+		log.Print(err)
+		return ErrFileNotFound
+	}
 
 	return nil
 }
