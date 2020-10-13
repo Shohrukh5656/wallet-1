@@ -1,8 +1,6 @@
 package wallet
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestService_RegisterAccount_success(t *testing.T) {
 	svc := Service{}

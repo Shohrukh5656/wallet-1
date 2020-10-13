@@ -1,8 +1,7 @@
 package main
 
-import (
-	"github.com/Nappy-Says/wallet/pkg/wallet"
-)
+import "github.com/Nappy-Says/wallet/pkg/wallet"
+
 
 func main() {
 	svc := &wallet.Service{}

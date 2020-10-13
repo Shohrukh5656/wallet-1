@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
 	"github.com/Nappy-Says/wallet/pkg/types"
 	"github.com/google/uuid"
 )
@@ -234,6 +233,7 @@ func (s *Service) ExportToFile(path string) error {
 }
 
 func (s *Service) ImportFromFile(path string) error {
+	s.ExportToFile(path)
 	file, err := os.Open(path)
 	if err != nil {
 		log.Print(err)
@@ -245,7 +245,6 @@ func (s *Service) ImportFromFile(path string) error {
 		}
 	}()
 
-	s.ExportToFile(path) 
 	content := make([]byte, 0)
 	buf := make([]byte, 4)
 	for {
@@ -262,7 +261,7 @@ func (s *Service) ImportFromFile(path string) error {
 	data := string(content)
 
 	accounts := strings.Split(string(data), "|")
-	accounts = accounts[:len(accounts)-1] 
+	accounts = accounts[:len(accounts)-1]
 	for _, account := range accounts {
 		vals := strings.Split(account, ";")
 
