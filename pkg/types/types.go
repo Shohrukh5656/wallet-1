@@ -3,7 +3,7 @@ package types
 type Money int64
 type PaymentCategory string
 type PaymentStatus string
-type phone string
+type Phone  string
 
 const (
 	PaymentStatusOk         PaymentStatus = "OK"
